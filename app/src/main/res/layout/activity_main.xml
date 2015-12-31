@@ -23,22 +23,27 @@
         <ImageView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:src="@drawable/composer_camera"/>
+            android:src="@drawable/composer_camera"
+            android:tag="Camera"/>
         <ImageView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:src="@drawable/composer_music"/>
+            android:src="@drawable/composer_music"
+            android:tag="Music"/>
         <ImageView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:src="@drawable/composer_place"/>
+            android:src="@drawable/composer_place"
+            android:tag="Place"/>
         <ImageView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:src="@drawable/composer_sleep"/>
+            android:src="@drawable/composer_sleep"
+            android:tag="Sleep"/>
         <ImageView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:src="@drawable/composer_thought"/>
+            android:src="@drawable/composer_thought"
+            android:tag="Thought"/>
     </per.yh.satellitemenu.view.SatelliteMenu>
 </RelativeLayout>
