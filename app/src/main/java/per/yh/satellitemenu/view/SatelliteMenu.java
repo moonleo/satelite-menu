@@ -22,7 +22,7 @@ public class SatelliteMenu extends ViewGroup{
 
     private int mRadio;//菜单半径
 
-    private boolean isOpen;//菜单是否处于打开状态
+    private boolean isOpen;//菜单状态
 
     public SatelliteMenu(Context context, AttributeSet attrs) {
         super(context, attrs);
@@ -70,27 +70,33 @@ public class SatelliteMenu extends ViewGroup{
                 mainBtn.setAnimation(rotateAnimation);
                 rotateAnimation.startNow();
                 if(!isOpen) {
+                    int offset = 100;
+                    int startOffset = 0;
                     for(int i=1; i<getChildCount(); i++) {
                         ImageView imageView = (ImageView) getChildAt(i);
                         imageView.setVisibility(View.VISIBLE);
                         AnimationSet set = new AnimationSet(true);
                         AlphaAnimation alpha = new AlphaAnimation(0, 1);
-                        alpha.setDuration(1500);
+                        alpha.setDuration(1000);
                         ScaleAnimation scale = new ScaleAnimation(0.1f, 1, 0.1f, 1, Animation.RELATIVE_TO_SELF, 0.5f, Animation.RELATIVE_TO_SELF, 0.5f);
-                        scale.setDuration(1500);
+                        scale.setDuration(1000);
                         RotateAnimation rotate = new RotateAnimation(0, 359, Animation.RELATIVE_TO_SELF, 0.5f, Animation.RELATIVE_TO_SELF, 0.5f);
-                        rotate.setDuration(1500);
+                        rotate.setDuration(1000);
                         TranslateAnimation translate = new TranslateAnimation(-imageView.getLeft(), 0, -imageView.getTop(), 0);
-                        translate.setDuration(1500);
+                        translate.setDuration(1000);
                         set.addAnimation(alpha);
                         set.addAnimation(scale);
                         set.addAnimation(rotate);
                         set.addAnimation(translate);
+                        set.setStartOffset(startOffset);
+                        startOffset += offset;
                         imageView.setAnimation(set);
                         set.start();
                         isOpen = true;
                     }
                 } else {
+                    int offset = 100;
+                    int startOffset = 0;
                     for(int i=1; i<getChildCount(); i++) {
                         ImageView imageView = (ImageView) getChildAt(i);
                         AnimationSet set = new AnimationSet(true);
@@ -106,6 +112,8 @@ public class SatelliteMenu extends ViewGroup{
                         set.addAnimation(scale);
                         set.addAnimation(rotate);
                         set.addAnimation(translate);
+                        set.setStartOffset(startOffset);
+                        startOffset+=offset;
                         imageView.setAnimation(set);
                         set.start();
                         imageView.setVisibility(View.INVISIBLE);
