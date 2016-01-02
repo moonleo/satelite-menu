@@ -1,7 +1,6 @@
 package per.yh.satellitemenu.view;
 
 import android.content.Context;
-import android.content.res.TypedArray;
 import android.util.AttributeSet;
 import android.util.TypedValue;
 import android.view.View;
@@ -58,21 +57,21 @@ public class SatelliteMenu extends ViewGroup{
     protected void onLayout(boolean changed, int l, int t, int r, int b) {
         if(changed) {
             //定位主按钮
-            layoutMainButton();
+            layoutMainButton(500);
         }
     }
 
     /**
      * 定位主按钮
      */
-    private void layoutMainButton() {
+    private void layoutMainButton(final long duration) {
         final RelativeLayout mainBtn = (RelativeLayout) getChildAt(0);
-        //主按钮左上位置坐标
-        int l = 0;
-        int t = 0;
-        //主按钮高和宽
-        final int width = mainBtn.getMeasuredWidth();
-        final int height = mainBtn.getMeasuredHeight();
+
+        int l = 0;//主按钮左上位置x坐标
+        int t = 0;//主按钮左上位置y坐标
+
+        final int width = mainBtn.getMeasuredWidth();//主按钮宽
+        final int height = mainBtn.getMeasuredHeight();//主按钮高
         switch (mPosition) {
             case LEFT_TOP:
                 break;
@@ -89,7 +88,7 @@ public class SatelliteMenu extends ViewGroup{
             default:
                 break;
         }
-        mainBtn.layout(l, t, l + width, t + height);
+        mainBtn.layout(l, t, l + width, t + height);//测量主按钮
 
         final int mainBtnLeft = l;
         final int mainBtnTop = t;
@@ -99,74 +98,81 @@ public class SatelliteMenu extends ViewGroup{
             public void onClick(View view) {
                 //主按钮旋转
                 RotateAnimation rotateAnimation = new RotateAnimation(0, 359, Animation.RELATIVE_TO_SELF, 0.5f, Animation.RELATIVE_TO_SELF, 0.5f);
-                rotateAnimation.setDuration(1000);
-                mainBtn.setAnimation(rotateAnimation);
-                rotateAnimation.startNow();
-                if (!isOpen) {
-                    int offset = 100;
-                    int startOffset = 0;
-                    for (int i = 1; i < getChildCount(); i++) {
-                        ImageView imageView = (ImageView) getChildAt(i);
-                        imageView.setVisibility(View.VISIBLE);
-                        AnimationSet set = new AnimationSet(true);
-                        AlphaAnimation alpha = new AlphaAnimation(0, 1);
-                        alpha.setDuration(800);
-                        ScaleAnimation scale = new ScaleAnimation(0.1f, 1, 0.1f, 1, Animation.RELATIVE_TO_SELF, 0.5f, Animation.RELATIVE_TO_SELF, 0.5f);
-                        scale.setDuration(800);
-                        RotateAnimation rotate = new RotateAnimation(0, 359, Animation.RELATIVE_TO_SELF, 0.5f, Animation.RELATIVE_TO_SELF, 0.5f);
-                        rotate.setDuration(800);
-                        TranslateAnimation translate = new TranslateAnimation(mainBtnLeft - imageView.getLeft(),
-                                0, mainBtnTop -  imageView.getTop(), 0);
-                        translate.setDuration(800);
-                        set.addAnimation(alpha);
-                        set.addAnimation(scale);
-                        set.addAnimation(rotate);
-                        set.addAnimation(translate);
-                        set.setStartOffset(startOffset);
-                        startOffset += offset;
-                        imageView.setAnimation(set);
-                        set.start();
+                rotateAnimation.setDuration(duration);
+                mainBtn.startAnimation(rotateAnimation);
+                for (int i = 1; i < getChildCount(); i++) {
+                    final ImageView subMenuItem = (ImageView) getChildAt(i);
+                    subMenuItem.setVisibility(View.VISIBLE);
+                    AnimationSet set = new AnimationSet(true);
+                    ScaleAnimation scale;//伸缩动画
+                    if(!isOpen) {
+                        scale = new ScaleAnimation(0.3f, 1, 0.3f, 1, Animation.RELATIVE_TO_SELF, 0.5f, Animation.RELATIVE_TO_SELF, 0.5f);
+                    } else {
+                        scale = new ScaleAnimation(1, 0.3f, 1, 0.3f, Animation.RELATIVE_TO_SELF, 0.5f, Animation.RELATIVE_TO_SELF, 0.5f);
                     }
-                    isOpen = true;
-                } else {
-                    int offset = 100;
-                    int startOffset = 0;
-                    for (int i = 1; i < getChildCount(); i++) {
-                        ImageView imageView = (ImageView) getChildAt(i);
-                        AnimationSet set = new AnimationSet(true);
-                        AlphaAnimation alpha = new AlphaAnimation(1, 0);
-                        alpha.setDuration(800);
-                        ScaleAnimation scale = new ScaleAnimation(1, 0.1f, 1, 0.1f, Animation.RELATIVE_TO_SELF, 0.5f, Animation.RELATIVE_TO_SELF, 0.5f);
-                        scale.setDuration(800);
-                        RotateAnimation rotate = new RotateAnimation(0, 359, Animation.RELATIVE_TO_SELF, 0.5f, Animation.RELATIVE_TO_SELF, 0.5f);
-                        rotate.setDuration(800);
-                        TranslateAnimation translate = new TranslateAnimation(0, mainBtnLeft - imageView.getLeft(),
-                                0, mainBtnTop - imageView.getTop());
-                        translate.setDuration(800);
-                        set.addAnimation(alpha);
-                        set.addAnimation(scale);
-                        set.addAnimation(rotate);
-                        set.addAnimation(translate);
-                        set.setStartOffset(startOffset);
-                        startOffset += offset;
-                        imageView.setAnimation(set);
-                        set.start();
-                        imageView.setVisibility(View.INVISIBLE);
+                    scale.setDuration(duration);
+
+                    //旋转动画
+                    RotateAnimation rotate = new RotateAnimation(0, 359, Animation.RELATIVE_TO_SELF, 0.5f, Animation.RELATIVE_TO_SELF, 0.5f);
+                    rotate.setDuration(duration);
+
+                    TranslateAnimation translate;//位移动画
+                    if(!isOpen) {
+                        translate = new TranslateAnimation(mainBtnLeft - subMenuItem.getLeft(),
+                                0, mainBtnTop - subMenuItem.getTop(), 0);
+                    } else {
+                        translate = new TranslateAnimation(0, mainBtnLeft - subMenuItem.getLeft(),
+                                0, mainBtnTop - subMenuItem.getTop());
                     }
-                    isOpen = false;
+                    translate.setDuration(duration);
+
+                    set.addAnimation(scale);
+                    set.addAnimation(rotate);
+                    set.addAnimation(translate);
+                    set.setStartOffset((i - 1) * 100);
+                    set.setAnimationListener(new Animation.AnimationListener() {
+                        @Override
+                        public void onAnimationStart(Animation animation) {
+                            mainBtn.setClickable(false);
+                            subMenuItem.setClickable(false);
+                        }
+
+                        @Override
+                        public void onAnimationEnd(Animation animation) {
+                            if(!isOpen) {
+                                subMenuItem.setVisibility(View.GONE);
+                            }
+                            mainBtn.setClickable(true);
+                            subMenuItem.setClickable(true);
+                        }
+
+                        @Override
+                        public void onAnimationRepeat(Animation animation) {
+                        }
+                    });
+                    subMenuItem.startAnimation(set);
                 }
+                changeMenuStatus();
             }
         });
         //定位子按钮
-        layoutSubButton(l, t);
+        layoutSubMenu(l, t, 500);
+    }
+
+    /**
+     * 切换菜单状态标志位
+     */
+    private void changeMenuStatus() {
+        isOpen = isOpen ? false: true;
     }
 
     /**
      * 定位子菜单
      * @param l 主按钮的左上x坐标
      * @param t 主按钮的左上y坐标
+     * @param duration 子菜单项动画时间
      */
-    private void layoutSubButton(int l, int t) {
+    private void layoutSubMenu(int l, int t, final long duration) {
         final int subMenuCount = getChildCount() - 1;//子菜单个数
         double startAngle = 0;//子菜单项的起始角度
         switch (mPosition) {
@@ -192,7 +198,7 @@ public class SatelliteMenu extends ViewGroup{
             x = l +  (int) (mRadio *Math.cos(startAngle));
             y = t + (int) (mRadio*Math.sin(startAngle));
             ImageView subMenuItem = (ImageView) getChildAt(i+1);
-            subMenuItem.setVisibility(View.INVISIBLE);
+            subMenuItem.setVisibility(View.GONE);
             subMenuItem.layout(x, y, x + subMenuItem.getMeasuredWidth(), y + subMenuItem.getMeasuredHeight());
             startAngle += angle;
             final String tag = (String) subMenuItem.getTag();
@@ -201,20 +207,33 @@ public class SatelliteMenu extends ViewGroup{
                 @Override
                 public void onClick(View view) {
                     for(int i=0; i<subMenuCount; i++) {
-                        ImageView imageView = (ImageView) getChildAt(i+1);
+                        final ImageView imageView = (ImageView) getChildAt(i+1);
                         if(!tag.equals(imageView.getTag())) {
                             imageView.setVisibility(View.INVISIBLE);
                         } else {
                             AnimationSet set = new AnimationSet(true);
                             ScaleAnimation scale = new ScaleAnimation(1, 1.5f, 1, 1.5f, Animation.RELATIVE_TO_SELF, 0.5f, Animation.RELATIVE_TO_SELF, 0.5f);
-                            scale.setDuration(500);
+                            scale.setDuration(duration);
                             AlphaAnimation alpha = new AlphaAnimation(1, 0.2f);
-                            alpha.setDuration(500);
+                            alpha.setDuration(duration);
                             set.addAnimation(scale);
                             set.addAnimation(alpha);
-                            imageView.setAnimation(set);
-                            scale.startNow();
-                            imageView.setVisibility(View.INVISIBLE);
+                            set.setAnimationListener(new Animation.AnimationListener() {
+                                @Override
+                                public void onAnimationStart(Animation animation) {
+                                }
+
+                                @Override
+                                public void onAnimationEnd(Animation animation) {
+                                    imageView.setVisibility(View.GONE);
+                                }
+
+                                @Override
+                                public void onAnimationRepeat(Animation animation) {
+
+                                }
+                            });
+                            imageView.startAnimation(set);
                         }
                     }
                     isOpen = false;
