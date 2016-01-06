@@ -52,10 +52,10 @@ public class SatelliteMenu extends ViewGroup implements View.OnClickListener {
     public SatelliteMenu(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
         TypedArray a = context.obtainStyledAttributes(attrs, R.styleable.satellitemenu);
-        int r = (int) a.getDimension(R.styleable.satellitemenu_radius, 150);
-        mRadius = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, r, getResources().getDisplayMetrics());
+//        int r = (int) a.getDimension(R.styleable.satellitemenu_radius, 150);
+        mRadius = (int) a.getDimension(R.styleable.satellitemenu_radius, 150);//(int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, r, getResources().getDisplayMetrics());
         int pos = a.getInt(R.styleable.satellitemenu_position, 0);
-        Log.d(TAG, pos+"");
+//        Log.d(TAG, pos+"");
         switch (pos) {
             case 0:
                 mPosition = Position.LEFT_TOP;
